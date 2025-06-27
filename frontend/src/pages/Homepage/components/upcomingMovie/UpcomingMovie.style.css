@@ -1,0 +1,16 @@
+.Upcoming-slider-wrapper {
+  margin-top: 80px; 
+}
+.upcoming-carousel-item {
+  padding: 0 3px; 
+  box-sizing: border-box;
+}
+
+.Upcoming-slider-wrapper .react-multiple-carousel__arrow {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.Upcoming-slider-wrapper:hover .react-multiple-carousel__arrow {
+  opacity: 1;
+}

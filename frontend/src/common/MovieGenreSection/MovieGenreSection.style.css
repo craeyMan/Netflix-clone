@@ -1,0 +1,24 @@
+.genre-slider-wrapper {
+    margin-bottom: 50px;
+  }
+  
+  .section-title {
+    font-size: 1.5rem;
+    color: white;
+    margin-bottom: 15px;
+    padding-left: 10px;
+  }
+
+  .genre-slider-wrapper .react-multiple-carousel__arrow {
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+  
+  .genre-slider-wrapper:hover .react-multiple-carousel__arrow {
+    opacity: 1;
+  }
+
+  .carousel-item-spacing {
+    padding-right: 3px; 
+  }
+  

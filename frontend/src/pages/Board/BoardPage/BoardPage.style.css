@@ -1,0 +1,111 @@
+.board-page {
+  margin-top: 40px;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 20px;
+  color: white;
+  background-color: black;
+}
+
+.board-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.board-table {
+  width: 100%;
+  border-collapse: collapse;
+  color: white;
+  background-color: transparent;
+}
+
+.board-table th,
+.board-table td {
+  text-align: center;
+  padding: 12px;
+  color: white;
+  background-color: transparent;
+  border: 1px solid #ff3c3c;
+}
+
+.board-table th:nth-child(4),
+.board-table td:nth-child(4) {
+  width: 180px;
+  white-space: nowrap;
+}
+
+.common-button {
+  height: 42px;
+  font-size: 16px;
+  padding: 6px 16px;
+  border-radius: 8px;
+  white-space: nowrap;
+}
+
+.common-input {
+  height: 42px;
+  width: 150px;
+  padding: 6px 12px;
+  font-size: 16px;
+  border-radius: 5px;
+  background-color: black;
+  color: white;
+  border: 1px solid #ff3c3c;
+  transition: width 0.3s ease;
+  vertical-align: middle;
+}
+
+.common-input:focus {
+  width: 250px;
+  background-color: black;
+  color: white;
+  border-color: #ff5e5e;
+  box-shadow: 0 0 0 2px rgba(255, 60, 60, 0.3);
+}
+
+.pagination .page-item .page-link {
+  background-color: black;
+  color: white;
+  border: 1px solid red;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: red;
+  color: white;
+  border: 1px solid red;
+}
+
+.pagination .page-item .page-link:hover {
+  background-color: #330000;
+  color: white;
+  border: 1px solid red;
+}
+
+.post-title-hover {
+  position: relative;
+  display: inline-block;
+  color: white;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.post-title-hover::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background-color: red;
+  transition: width 0.3s ease;
+}
+
+.post-title-hover:hover {
+  color: red;
+}
+
+.post-title-hover:hover::after {
+  width: 100%;
+}
