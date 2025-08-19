@@ -1,0 +1,80 @@
+.movie-card {
+  width: 100%;
+  height: 100%;
+  aspect-ratio: 2 / 3;
+  box-sizing: border-box;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  justify-content: center;
+}
+
+.movie-card:hover {
+  transform: scale(1.05);
+  z-index: 10;
+}
+
+.movie-thumbnail {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.movie-overlay {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.92);
+  color: white;
+  padding: 12px;
+  transform: translateY(100%);
+  opacity: 0;
+  transition: all 1.5s ease;
+}
+
+.movie-card:hover .movie-overlay {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.button-group {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.icon {
+  font-size: 30px;
+  cursor: pointer;
+  padding: 6px;
+  background: #222;
+  color: white;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.icon.liked {
+  color: red;
+}
+
+.movie-title {
+  font-size: 14px;
+  font-weight: bold;
+  margin-bottom: 8px;
+}
+
+.movie-card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+}
+
+.right-icon {
+  margin-left: auto;
+}

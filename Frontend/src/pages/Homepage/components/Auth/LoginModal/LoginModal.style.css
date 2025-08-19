@@ -1,0 +1,114 @@
+.login-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.login-modal-content {
+  width: 300px;
+  padding: 3rem 2.5rem;
+  border-radius: 8px;
+  text-align: center;
+  color: white;
+}
+
+.login-modal-content h2 {
+  font-size: 28px;
+  margin-bottom: 2rem;
+  color: white;
+}
+
+.login-modal-content input {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 1rem;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #333;
+  color: white;
+}
+
+.login-modal-content input::placeholder {
+  color: #aaa;
+}
+
+.login-modal-content input:-webkit-autofill {
+  background-color: #333 !important;
+  -webkit-box-shadow: 0 0 0 1000px #333 inset;
+  -webkit-text-fill-color: white;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.login-button {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: none;
+  border-radius: 4px;
+  background-color: #e50914;
+  color: #aaa;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.login-button:hover {
+  background-color: #c40812;
+}
+
+.signup-link {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 14px;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.close-button {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #aaa;
+}
+
+.close-button:hover {
+  color: #fff;
+}
+
+.checkbox-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 1rem;
+  font-size: 14px;
+  color: #aaa;
+}
+
+.checkbox-wrapper input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  position: relative;
+  top: 1px;
+  margin: 0;
+  padding: 0;
+  accent-color: red;
+}
+
+.checkbox-wrapper label {
+  margin: 0;
+  padding: 0;
+  line-height: 1;
+}

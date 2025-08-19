@@ -1,0 +1,184 @@
+.netflix-modal-content {
+    background-color: #111;
+    border: none;
+    padding: 0;
+  }
+  
+  .modal-container {
+    display: flex;
+    flex-direction: column;
+    color: white;
+  }
+  
+  .modal-image {
+    background-size: cover;
+    background-position: center;
+    height: 400px;
+    position: relative;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+  }
+  
+  .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.3rem;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+  }
+  
+  .modal-content-area {
+    padding: 20px 30px;
+    background-color: #111;
+  }
+  
+  .modal-title {
+    font-size: 2rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #aaa;
+  }
+  
+  .modal-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+  
+  .play-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: black;
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    padding: 8px 16px;
+    cursor: pointer;
+  }
+  
+  .icon {
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: white;
+  }
+  
+  .cast-section {
+    display: flex;
+    overflow-x: auto;
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+  
+  .actor-card {
+    width: 100px;
+    text-align: center;
+    color: white;
+  }
+  
+  .actor-card img {
+    width: 100%;
+    border-radius: 6px;
+  }
+  
+  .actor-name {
+    font-size: 0.85rem;
+    margin-top: 4px;
+  }
+  
+  .modal-overview {
+    color: #aaa;
+    font-size: 1rem;
+    line-height: 1.5;
+    max-height: 150px;
+    overflow-y: auto;
+  }
+  
+
+  .modal-video-wrapper {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: black;
+  }
+  
+  .modal-video {
+    width: 100%;
+    height: 100%;
+    border: none;
+  }
+  
+  .no-video {
+    width: 100%;
+    height: 100%;
+    color: white;
+    background: #000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+  
+  .no-video-message {
+    width: 100%;
+    text-align: center;
+    padding: 2rem;
+    font-size: 1.2rem;
+    color: #ccc;
+  }
+  .no-trailer {
+    background-color: #000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 400px;
+    position: relative;
+  }
+  
+  
+  .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 1.3rem;
+    background: rgba(0, 0, 0, 0.6);
+    border: none;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 2;
+  }
+  
+  .movie-meta {
+    color: #aaa;
+    font-size: 0.95rem;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .movie-age {
+    color: #aaa;
+    font-size: 1rem;
+    margin-top: 10px;
+  }
+  
+  .cert-badge {
+    background-color: rgba(255, 255, 255, 0.15);
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.85rem;
+    color: white;
+    border: 1px solid #666;
+  }
+  

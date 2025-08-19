@@ -1,0 +1,47 @@
+.edit-post-page {
+  margin-top: 40px;
+  color: white;
+  max-width: 800px;
+}
+
+.custom-input,
+.custom-textarea {
+  background-color: black;
+  border: 1px solid #ff3c3c;
+  color: white;
+  padding: 12px;
+  border-radius: 4px;
+  width: 100%;
+  margin-bottom: 1rem;
+  font-size: 16px;
+}
+
+.custom-input:focus,
+.custom-textarea:focus {
+  border-color: #ff5e5e;
+  box-shadow: 0 0 0 2px rgba(255, 60, 60, 0.3);
+  outline: none;
+}
+
+.custom-input:disabled {
+  background-color: black;
+  color: white;
+  opacity: 1;
+}
+
+.outline-red-btn {
+  border: 1px solid #ff3c3c;
+  background-color: transparent;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: bold;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.outline-red-btn:hover {
+  background-color: #ff3c3c;
+  color: black;
+  cursor: pointer;
+}

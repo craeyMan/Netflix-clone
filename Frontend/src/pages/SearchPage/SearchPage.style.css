@@ -1,0 +1,44 @@
+.recommended-keywords {
+  margin-bottom: 20px;
+}
+
+.keyword-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.keyword-button {
+  padding: 6px 14px;
+  font-size: 0.9rem;
+  color: #eee;
+  background-color: transparent;
+  border: 1px solid #444;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.keyword-button:hover {
+  background-color: #333;
+  color: white;
+}
+
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.center-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 50vh;
+}
