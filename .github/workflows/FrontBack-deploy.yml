@@ -57,8 +57,8 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y dos2unix
-          dos2unix ./backend/gradlew
-          chmod +x ./backend/gradlew
+          dos2unix ./backend/netflix2/gradlew
+          chmod +x ./backend/netflix2/gradlew
 
       - name: Build Spring Boot with Gradle
         working-directory: ./backend/netflix2
