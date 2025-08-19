@@ -38,7 +38,7 @@ jobs:
             exit 1
           fi
 
-  build-backend:
+  build-Backend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -71,7 +71,7 @@ jobs:
       - name: Copy JAR to EC2 via SSM
         run: |
           aws ssm send-command \
-            --targets "Key=instanceIds,Values=${{ secrets.EC2_INSTANCE_ID }}" \
+            --targets "Key=instanceIds,Values=i-01407f869499ddfe1" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Spring Boot JAR" \
             --parameters 'commands=[
