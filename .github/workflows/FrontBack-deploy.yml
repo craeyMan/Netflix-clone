@@ -65,7 +65,7 @@ jobs:
         run: ./gradlew build -x test
 
       - name: List built JARs
-        run: ls -la ./backend/build/libs
+        run: ls -la ./backend/netflix2/build/libs
 
       - name: Copy JAR to EC2
         uses: appleboy/scp-action@master
@@ -73,7 +73,7 @@ jobs:
           host: ${{ secrets.EC2_HOST }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
-          source: ./backend/build/libs/netflix2-0.0.1-SNAPSHOT.jar
+          source: ./backend/netflix2/build/libs/netflix2-0.0.1-SNAPSHOT.jar
           target: /home/ubuntu/
 
       - name: Deploy Backend on EC2
