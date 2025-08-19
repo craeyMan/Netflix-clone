@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build-react:
+  build-Frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -50,9 +50,6 @@ jobs:
           distribution: temurin
           java-version: 22
 
-      - name: Verify Java version
-        run: java -version
-
       - name: Fix gradlew for Linux
         run: |
           sudo apt-get update
@@ -64,38 +61,24 @@ jobs:
         working-directory: ./backend/netflix2
         run: ./gradlew build -x test
 
-      - name: List built JARs
-        run: ls -la ./backend/netflix2/build/libs
-
-      - name: Copy JAR to EC2
-        uses: appleboy/scp-action@master
+      - name: Upload JAR to SSM Temp
+        uses: aws-actions/configure-aws-credentials@v2
         with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          source: ./backend/netflix2/build/libs/netflix2-0.0.1-SNAPSHOT.jar
-          target: /home/ubuntu/
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
-      - name: Deploy Backend on EC2
-        uses: appleboy/ssh-action@v0.1.7
-        with:
-          host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          key: ${{ secrets.EC2_SSH_KEY }}
-          port: 22
-          script: |
-            set -e
-            NEW_JAR="/home/ubuntu/netflix2-0.0.1-SNAPSHOT.jar"
-            APP_JAR="/home/ubuntu/app.jar"
-
-            if [ -f "$NEW_JAR" ]; then
-              sudo systemctl stop myapp || true
-              sudo mv "$NEW_JAR" "$APP_JAR"
-              sudo chown ubuntu:ubuntu "$APP_JAR"
-              sudo systemctl daemon-reload
-              sudo systemctl start myapp
-              sudo systemctl status myapp --no-pager
-            else
-              echo "ERROR: $NEW_JAR not found on EC2."
-              exit 1
-            fi
+      - name: Copy JAR to EC2 via SSM
+        run: |
+          aws ssm send-command \
+            --targets "Key=instanceIds,Values=${{ secrets.EC2_INSTANCE_ID }}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy Spring Boot JAR" \
+            --parameters 'commands=[
+              "sudo cp /tmp/netflix2-0.0.1-SNAPSHOT.jar /home/ubuntu/app.jar",
+              "sudo chown ubuntu:ubuntu /home/ubuntu/app.jar",
+              "sudo systemctl daemon-reload",
+              "sudo systemctl stop myapp || true",
+              "sudo systemctl start myapp"
+            ]' \
+            --region ap-northeast-2
