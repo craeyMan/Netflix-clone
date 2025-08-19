@@ -61,7 +61,7 @@ jobs:
           chmod +x ./backend/gradlew
 
       - name: Build Spring Boot with Gradle
-        working-directory: ./backend/gradlew
+        working-directory: ./backend/netflix2
         run: ./gradlew build -x test
 
       - name: List built JARs
