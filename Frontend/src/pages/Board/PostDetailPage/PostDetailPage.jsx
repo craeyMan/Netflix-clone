@@ -32,7 +32,7 @@ const PostDetailPage = () => {
 
     const fetchPost = async () => {
       try {
-        const res = await authApi.get(`/posts/${id}`);
+        const res = await authApi.get(`/api/posts/${id}`);
         const fetchedPost = res.data;
 
         const isAuthor = username === fetchedPost.author;
@@ -59,7 +59,7 @@ const PostDetailPage = () => {
   const handleDelete = async () => {
     if (window.confirm('정말 삭제하시겠습니까?')) {
       try {
-        await authApi.delete(`/posts/${id}`);
+        await authApi.delete(`/api/posts/${id}`);
         toast.success('게시글이 삭제되었습니다!');
         navigate('/board');
       } catch {

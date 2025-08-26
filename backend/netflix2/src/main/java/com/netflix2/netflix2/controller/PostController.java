@@ -9,11 +9,12 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.http.HttpStatus;
 
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 @RestController
-@RequestMapping("/posts")
+@RequestMapping("/api/posts")
 @RequiredArgsConstructor
 public class PostController {
 
@@ -34,7 +35,7 @@ public class PostController {
                 .title(post.getTitle())
                 .content(post.getContent())
                 .author(userDetails.getUsername())
-                .createdAt(LocalDateTime.now().withNano(0))
+                .createdAt(ZonedDateTime.now(ZoneId.of("Asia/Seoul")))
                 .isSecret(post.isSecret())
                 .build();
 

@@ -19,7 +19,7 @@ const EditPostPage = () => {
   useEffect(() => {
     const fetchPost = async () => {
       try {
-        const res = await authApi.get(`/posts/${id}`);
+        const res = await authApi.get(`/api/posts/${id}`);
         const post = res.data;
         setTitle(post.title);
         setContent(post.content);
@@ -42,7 +42,7 @@ const EditPostPage = () => {
 
     try {
       setLoading(true);
-      await authApi.put(`/posts/${id}`, updatedPost);
+      await authApi.put(`/api/posts/${id}`, updatedPost);
       toast.success('게시글이 수정되었습니다!');
       navigate('/board', { state: { updated: true } }); // 수정 후 목록 새로고침 유도
     } catch {

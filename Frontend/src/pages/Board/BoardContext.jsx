@@ -11,7 +11,7 @@ export const BoardProvider = ({ children }) => {
 
   // 게시글 목록 불러오기
   const fetchPosts = async () => {
-    const res = await authApi.get('/posts');
+    const res = await authApi.get('/api/posts');
     setPosts(res.data);
   };
 
@@ -22,7 +22,7 @@ export const BoardProvider = ({ children }) => {
 
   // 게시글 등록 후 목록 새로고침
   const addPost = async (post) => {
-    await authApi.post('/posts', post);
+    await authApi.post('/api/posts', post);
     fetchPosts();
   };
 

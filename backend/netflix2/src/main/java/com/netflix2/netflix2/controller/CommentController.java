@@ -23,17 +23,11 @@ public class CommentController {
     public List<Comment> getComments(@PathVariable Long postId,
                                      @AuthenticationPrincipal UserDetails user) {
         Post post = postRepository.findById(postId).orElseThrow();
-        String currentUser = user.getUsername();
-        boolean isAdmin = user.getAuthorities().stream()
+        String currentUser = user != null ? user.getUsername() : "";
+        boolean isAdmin = user != null && user.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
-        if (post.isSecret()) {
-            if (!isAdmin && !currentUser.equals(post.getAuthor())) {
-                return List.of();
-            }
-        }
-
-        return commentService.getVisibleComments(postId, currentUser);
+        return commentService.getVisibleComments(postId, currentUser, isAdmin);
     }
 
     @PostMapping
@@ -44,8 +38,8 @@ public class CommentController {
         boolean isAdmin = user.getAuthorities().stream()
                 .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
 
-        if (!(isAdmin || currentUser.equals(post.getAuthor()))) {
-            throw new RuntimeException("댓글 작성 권한이 없습니다.");
+        if (post.isSecret() && !(isAdmin || currentUser.equals(post.getAuthor()))) {
+            throw new RuntimeException("비밀글에 댓글 작성 권한이 없습니다.");
         }
 
         String role = isAdmin ? "ADMIN" : "USER";
@@ -62,8 +56,13 @@ public class CommentController {
     }
 
     @DeleteMapping("/{commentId}")
-    public void deleteComment(@PathVariable Long commentId) {
-        commentService.deleteComment(commentId);
+    public void deleteComment(@PathVariable Long commentId,
+                              @AuthenticationPrincipal UserDetails user) {
+        String currentUser = user.getUsername();
+        boolean isAdmin = user.getAuthorities().stream()
+                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+
+        commentService.deleteComment(commentId, currentUser, isAdmin);
     }
 
     public record CommentRequest(

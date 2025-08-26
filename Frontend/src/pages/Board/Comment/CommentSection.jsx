@@ -5,7 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import './CommentSection.style.css';
 import Spinner from '../../Homepage/components/Spinner/Spinner';
 
-const CommentSection = ({ postId, postTitle, postAuthor, isSecret }) => {
+const CommentSection = ({ postId, postTitle, }) => {
   const [comments, setComments] = useState([]);
   const [content, setContent] = useState('');
   const [loading, setLoading] = useState(false);
@@ -15,16 +15,13 @@ const CommentSection = ({ postId, postTitle, postAuthor, isSecret }) => {
   const username = decoded?.sub || '';
   const role = decoded?.role || '';
   const isAdmin = role === 'ADMIN';
-  const isAuthor = username === postAuthor;
 
-  // 댓글 보기/쓰기 권한 설정
-  const canView = !isSecret || isAuthor || isAdmin;
-  const canWrite = isAuthor || isAdmin;
+  // 누구나 댓글 보기, 쓰기 가능
+  const canView = true;
+  const canWrite = true;
 
   useEffect(() => {
-    if (canView) {
-      fetchComments(); // 비밀글 조건을 통과한 경우에만 댓글 불러오기
-    }
+    if (canView) fetchComments();
   }, [postId, canView]);
 
   const fetchComments = async () => {
@@ -32,9 +29,9 @@ const CommentSection = ({ postId, postTitle, postAuthor, isSecret }) => {
       setLoading(true);
       const res = await authApi.get(`/api/comments/${postId}`);
       setComments(res.data || []);
-    } catch (err) {
-    } finally {
-      setLoading(false);
+    } catch (err) {} 
+    finally {
+      { setLoading(false); }
     }
   };
 
@@ -44,28 +41,23 @@ const CommentSection = ({ postId, postTitle, postAuthor, isSecret }) => {
 
     try {
       setLoading(true);
-      await authApi.post('/api/comments', {
-        postId,
-        author: username,
-        content,
-      });
+      await authApi.post('/api/comments', { postId, content, parentId: null });
       setContent('');
       await fetchComments();
-    } catch (err) {
-    } finally {
-      setLoading(false);
-    }
+    } catch (err) {} 
+    finally { setLoading(false); }
   };
 
-  const handleDelete = async (commentId) => {
+  const handleDelete = async (commentId, commentAuthor) => {
+    // 작성자 본인 또는 관리자만 삭제 가능
+    if (!isAdmin && username !== commentAuthor) return;
+
     try {
       setLoading(true);
       await authApi.delete(`/api/comments/${commentId}`);
       await fetchComments();
-    } catch (err) {
-    } finally {
-      setLoading(false);
-    }
+    } catch (err) {} 
+    finally { setLoading(false); }
   };
 
   return (
@@ -74,20 +66,21 @@ const CommentSection = ({ postId, postTitle, postAuthor, isSecret }) => {
 
       {loading ? (
         <Spinner />
-      ) : !canView ? (
-        <p className="text-muted">비밀글입니다. 댓글을 볼 수 없습니다.</p>
       ) : comments.length === 0 ? (
-        isAuthor || isAdmin ? (
-          <p className="no-comments">등록된 댓글이 없습니다.</p>
-        ) : (
-          <p className="no-comments">이 댓글은 작성자와 관리자만 볼 수 있습니다.</p>
-        )
+        <p className="no-comments">등록된 댓글이 없습니다.</p>
       ) : (
         comments.map((c) => (
           <div key={c.id} className="comment-item">
             <div className="comment-header">
               <div className="comment-title-in-box">{postTitle}</div>
-              <button className="delete-x-btn" onClick={() => handleDelete(c.id)}>×</button>
+              {(isAdmin || c.author === username) && (
+                <button
+                  className="delete-x-btn"
+                  onClick={() => handleDelete(c.id, c.author)}
+                >
+                  ×
+                </button>
+              )}
             </div>
             <div className="comment-divider"></div>
             <div className="comment-body">
@@ -95,7 +88,9 @@ const CommentSection = ({ postId, postTitle, postAuthor, isSecret }) => {
               <div className="comment-meta">
                 <div className="comment-meta-author">작성자: {c.author}</div>
                 <div className="comment-meta-date">
-                  {c.createdAt ? new Date(c.createdAt).toLocaleString() : ''}
+                  {c.createdAt
+                    ? new Date(c.createdAt).toLocaleString('ko-KR', { hour12: true })
+                    : ''}
                 </div>
               </div>
             </div>

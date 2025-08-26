@@ -2,7 +2,8 @@ package com.netflix2.netflix2.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
 
 @Entity
 @Table(name = "comment")
@@ -26,7 +27,7 @@ public class Comment {
     @Column(columnDefinition = "TEXT")
     private String content;
 
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
     @Column(name = "visible_to")
     private String visibleTo; 
@@ -40,6 +41,6 @@ public class Comment {
 
     @PrePersist
     public void prePersist() {
-        this.createdAt = LocalDateTime.now();
+    this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
     }
 }

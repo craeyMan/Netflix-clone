@@ -11,8 +11,6 @@ export const LikeProvider = ({ children }) => {
   const [top10, setTop10] = useState([]);
 
   useEffect(() => {
-    if (isLoggedIn) {
-    }
     fetchTop10();
   }, [isLoggedIn]);
 
@@ -23,10 +21,17 @@ export const LikeProvider = ({ children }) => {
       const movieDetails = await Promise.all(
         res.data.map(async (item) => {
           const detail = await api.get(`/movie/${item.movieId}`);
-          return detail.data;
+          return { ...detail.data, liked: item.liked };
         })
       );
       setTop10(movieDetails);
+
+      const map = {};
+      movieDetails.forEach((movie) => {
+        map[movie.id] = movie.liked;
+      });
+      setLikedMap(map);
+
     } catch (err) {
       // console 제거 요청 반영
     }
@@ -40,7 +45,6 @@ export const LikeProvider = ({ children }) => {
       } else {
         await authApi.post('/likes', { movieId });
       }
-      setLikedMap((prev) => ({ ...prev, [movieId]: !isLiked }));
       await fetchTop10();
     } catch (err) {
       // console 제거 요청 반영

@@ -2,7 +2,8 @@ package com.netflix2.netflix2.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.ZoneId;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
@@ -20,7 +21,7 @@ public class Post {
     private String title;
     private String content;
     private String author;
-    private LocalDateTime createdAt;
+    private ZonedDateTime createdAt;
 
     @Column(name = "is_secret")
     @JsonProperty("isSecret") 
@@ -29,4 +30,9 @@ public class Post {
     @Builder.Default
     @Column(nullable = false)
     private int views = 0; 
+    
+    @PrePersist
+    public void prePersist() {
+    this.createdAt = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
+    }
 }

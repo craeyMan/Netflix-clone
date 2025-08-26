@@ -37,7 +37,7 @@ const BoardPage = () => {
   const fetchPosts = async () => {
     try {
       setLoading(true);
-      const res = await authApi.get('/posts');
+      const res = await authApi.get('/api/posts');
       setPosts(res.data.reverse());
     } catch {
       toast.error('게시글을 불러오는 데 실패했습니다.');
@@ -50,7 +50,7 @@ const BoardPage = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await authApi.get(`/posts/search?keyword=${keyword}`);
+      const res = await authApi.get(`/api/posts/search?keyword=${keyword}`);
       setPosts(res.data.reverse());
       setCurrentPage(1);
     } catch {
@@ -187,15 +187,7 @@ const BoardPage = () => {
                     </td>
                     <td>{post.author}</td>
                     <td>
-                      {new Intl.DateTimeFormat('ko-KR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                        hour: 'numeric',
-                        minute: 'numeric',
-                        second: 'numeric',
-                        hour12: true,
-                      }).format(new Date(post.createdAt))}
+                      {post.createdAt ? new Date(post.createdAt).toLocaleString('ko-KR', { hour12: true }) : ''}
                     </td>
                   </tr>
                 );

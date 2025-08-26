@@ -16,9 +16,18 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
 
-    public List<Comment> getVisibleComments(Long postId, String currentUser) {
+    public List<Comment> getVisibleComments(Long postId, String currentUser, boolean isAdmin) {
         Post post = postRepository.findById(postId).orElseThrow();
-        return commentRepository.findVisibleComments(post, currentUser);
+        
+        if (post.isSecret() && !isAdmin && !currentUser.equals(post.getAuthor())) {
+            return List.of();
+        }
+        
+        if (post.isSecret()) {
+        	return commentRepository.findVisibleComments(post, currentUser);
+        } else {
+        	return commentRepository.findByPostOrderByCreatedAtAsc(post);
+        }
     }
 
     public Comment createCommentWithDetails(Post post,
@@ -42,7 +51,14 @@ public class CommentService {
         return commentRepository.save(builder.build());
     }
 
-    public void deleteComment(Long commentId) {
+    public void deleteComment(Long commentId, String currentUser, boolean isAdmin) {
+        Comment comment = commentRepository.findById(commentId)
+                .orElseThrow(() -> new RuntimeException("댓글이 존재하지 않습니다."));
+
+        if (!isAdmin && !comment.getAuthor().equals(currentUser)) {
+            throw new RuntimeException("댓글 삭제 권한이 없습니다.");
+        }
+
         commentRepository.deleteById(commentId);
     }
 }
