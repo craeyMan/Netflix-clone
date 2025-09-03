@@ -23,6 +23,7 @@ repositories {
 	mavenCentral()
 }
 
+
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -49,10 +50,4 @@ tasks.named('test') {
 
 application {
     mainClass = 'com.netflix2.netflix2.Netflix2Application'
-}
-
-bootJar {
-    launchScript() 
-    archiveFileName = 'app.jar' 
-    mainClassName = 'com.netflix2.netflix2.Netflix2Application'
 }

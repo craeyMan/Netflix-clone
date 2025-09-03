@@ -1,0 +1,33 @@
+# 1️⃣ 빌드 스테이지 (Amazon Corretto 22 + Gradle 수동 설치)
+FROM amazoncorretto:22 AS build
+
+# 필수 패키지 설치
+# dnf update 실패하면 --nobest 옵션 추가 가능
+RUN dnf -y update \
+    && dnf install -y bash git unzip curl wget tar gzip \
+    && dnf clean all
+
+# Gradle 8.7 설치
+RUN curl -L -o /tmp/gradle.zip "https://services.gradle.org/distributions/gradle-8.7-bin.zip" \
+    && unzip /tmp/gradle.zip -d /opt \
+    && rm /tmp/gradle.zip
+ENV PATH="/opt/gradle-8.7/bin:${PATH}"
+
+WORKDIR /app
+COPY . .
+
+# Gradle 빌드 (테스트 제외)
+RUN gradle clean build -x test --stacktrace
+
+# 2️⃣ 런타임 스테이지 (Lambda)
+FROM amazoncorretto:22
+
+# 빌드 산출물 복사
+COPY --from=build /app/build/libs/*.jar /app/app.jar
+
+# Lambda Runtime Interface Client 설치
+RUN curl -Lo /aws-lambda-ric https://github.com/aws/aws-lambda-runtime-interface-client/releases/latest/download/aws-lambda-ric \
+    && chmod +x /aws-lambda-ric
+
+ENTRYPOINT [ "/aws-lambda-ric" ]
+CMD [ "java", "-jar", "/app/app.jar" ]

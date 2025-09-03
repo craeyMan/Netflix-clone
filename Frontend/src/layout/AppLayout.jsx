@@ -28,7 +28,7 @@ const AppLayout = () => {
             </Nav>
             <div className="d-flex">
               <SearchBox />
-                <AuthButton />
+              <AuthButton />
             </div>
           </Navbar.Collapse>
         </Container>
