@@ -38,47 +38,45 @@ jobs:
             exit 1
           fi
 
-  build-Backend:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v3
+ build-Backend:
+  name: Build & Deploy Spring Boot Lambda
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up JDK 22
-        uses: actions/setup-java@v3
-        with:
-          distribution: temurin
-          java-version: 22
+    - name: Set up JDK 22
+      uses: actions/setup-java@v3
+      with:
+        distribution: temurin
+        java-version: 22
 
-      - name: Fix gradlew for Linux
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y dos2unix
-          dos2unix ./backend/netflix2/gradlew
-          chmod +x ./backend/netflix2/gradlew
+    - name: Fix gradlew for Linux
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y dos2unix unzip python3-pip
+        dos2unix ./backend/netflix2/gradlew
+        chmod +x ./backend/netflix2/gradlew
 
-      - name: Build Spring Boot with Gradle
-        working-directory: ./backend/netflix2
-        run: ./gradlew build -x test
+    - name: Build Spring Boot JAR
+      working-directory: ./backend/netflix2
+      run: ./gradlew clean build -x test
 
-      - name: Upload JAR to SSM Temp
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+    - name: Install AWS SAM CLI
+      run: |
+        pip3 install --upgrade pip
+        pip3 install aws-sam-cli
 
-      - name: Copy JAR to EC2 via SSM
-        run: |
-          aws ssm send-command \
-            --targets "Key=instanceIds,Values=i-01407f869499ddfe1" \
-            --document-name "AWS-RunShellScript" \
-            --comment "Deploy Spring Boot JAR" \
-            --parameters 'commands=[
-              "sudo cp /tmp/netflix2-0.0.1-SNAPSHOT.jar /home/ubuntu/app.jar",
-              "sudo chown ubuntu:ubuntu /home/ubuntu/app.jar",
-              "sudo systemctl daemon-reload",
-              "sudo systemctl stop myapp || true",
-              "sudo systemctl start myapp"
-            ]' \
-            --region ap-northeast-2
+    - name: Deploy Lambda via SAM
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_REGION: ap-northeast-2
+      run: |
+        cd ./backend/netflix2
+        sam build
+        sam deploy --stack-name netflix-backend \
+                   --capabilities CAPABILITY_IAM \
+                   --region $AWS_REGION \
+                   --no-confirm-changeset \
+                   --resolve-s3
