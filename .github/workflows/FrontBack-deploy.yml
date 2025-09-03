@@ -1,4 +1,4 @@
-name: FrontBack Build & Deploy to Lambda
+name: FrontBack Build & Deploy
 
 on:
   push:
@@ -61,25 +61,24 @@ jobs:
         working-directory: ./backend/netflix2
         run: ./gradlew build -x test
 
-      - name: Login to AWS ECR
-        uses: aws-actions/amazon-ecr-login@v2
+      - name: Upload JAR to SSM Temp
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
 
-      - name: Build Docker image for Lambda
-        working-directory: ./backend/netflix2
+      - name: Copy JAR to EC2 via SSM
         run: |
-          docker build -t ${{ secrets.ECR_REPO }}:latest .
-
-      - name: Push Docker image to ECR
-        run: |
-          docker tag ${{ secrets.ECR_REPO }}:latest ${{ secrets.ECR_REPO_URI }}:latest
-          docker push ${{ secrets.ECR_REPO_URI }}:latest
-
-      - name: Update Lambda function to use new image
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ap-northeast-2
-        run: |
-          aws lambda update-function-code \
-            --function-name my-lambda-function \
-            --image-uri ${{ secrets.ECR_REPO_URI }}:latest
+          aws ssm send-command \
+            --targets "Key=instanceIds,Values=i-01407f869499ddfe1" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy Spring Boot JAR" \
+            --parameters 'commands=[
+              "sudo cp /tmp/netflix2-0.0.1-SNAPSHOT.jar /home/ubuntu/app.jar",
+              "sudo chown ubuntu:ubuntu /home/ubuntu/app.jar",
+              "sudo systemctl daemon-reload",
+              "sudo systemctl stop myapp || true",
+              "sudo systemctl start myapp"
+            ]' \
+            --region ap-northeast-2
