@@ -47,24 +47,16 @@ jobs:
       - run: ./gradlew clean build -x test
         working-directory: ./backend/netflix2
 
-      # SAM 배포 주석 처리, 필요시 활성화
-      #- run: |
-      #    cd ./backend/netflix2
-      #    sam build
-      #    sam deploy --stack-name netflix-backend \
-      #               --capabilities CAPABILITY_IAM \
-      #               --region ap-northeast-2
-      #  env:
-      #    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      #    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-      #    AWS_REGION: ap-northeast-2
-
-      - run: |
-          aws lambda update-function-code \
-            --function-name NetflixBackend \
-            --zip-file fileb://./backend/netflix2/build/libs/netflix2-0.0.1-SNAPSHOT.jar \
-            --region ap-northeast-2
+      - name: Deploy Lambda directly
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ap-northeast-2
+        run: |
+          # 빌드된 첫 번째 JAR 파일 자동 선택
+          JAR_FILE=$(ls ./backend/netflix2/build/libs/*.jar | head -n 1)
+          echo "Deploying $JAR_FILE to Lambda..."
+          aws lambda update-function-code \
+            --function-name NetflixBackend \
+            --zip-file fileb://$JAR_FILE \
+            --region $AWS_REGION
