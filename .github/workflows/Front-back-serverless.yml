@@ -1,0 +1,70 @@
+name: FrontBack Serverless Build & Deploy
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  Build-Frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      - run: npm install --legacy-peer-deps
+        working-directory: ./Frontend
+
+      - run: CI=false npm run build
+        working-directory: ./Frontend
+
+      - run: |
+          aws s3 cp --recursive ./Frontend/build s3://netflix1-react --region ap-northeast-2
+          if [ $? -ne 0 ]; then exit 1; fi
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+  Build-Backend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: 22
+
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y dos2unix unzip python3-pip
+          dos2unix ./backend/netflix2/gradlew
+          chmod +x ./backend/netflix2/gradlew
+
+      - run: ./gradlew clean build -x test
+        working-directory: ./backend/netflix2
+
+      # SAM 배포 주석 처리, 필요시 활성화
+      #- run: |
+      #    cd ./backend/netflix2
+      #    sam build
+      #    sam deploy --stack-name netflix-backend \
+      #               --capabilities CAPABILITY_IAM \
+      #               --region ap-northeast-2
+      #  env:
+      #    AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #    AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #    AWS_REGION: ap-northeast-2
+
+      - run: |
+          aws lambda update-function-code \
+            --function-name NetflixBackend \
+            --zip-file fileb://./backend/netflix2/build/libs/netflix2-0.0.1-SNAPSHOT.jar \
+            --region ap-northeast-2
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ap-northeast-2

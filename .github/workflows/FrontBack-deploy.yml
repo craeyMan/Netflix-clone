@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  build-Frontend:
+  Build-Frontend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -38,8 +38,7 @@ jobs:
             exit 1
           fi
 
-  build-Backend:
-    name: Build & Deploy Spring Boot Lambda
+  Build-Backend:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -62,21 +61,13 @@ jobs:
         working-directory: ./backend/netflix2
         run: ./gradlew clean build -x test
 
-      - name: Install AWS SAM CLI
-        run: |
-          pip3 install --upgrade pip
-          pip3 install aws-sam-cli
-
-      - name: Deploy Lambda via SAM
+      - name: Deploy Lambda directly
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ap-northeast-2
         run: |
-          cd ./backend/netflix2
-          sam build
-          sam deploy --stack-name netflix-backend \
-                     --capabilities CAPABILITY_IAM \
-                     --region $AWS_REGION \
-                     --no-confirm-changeset \
-                     --resolve-s3
+          aws lambda update-function-code \
+            --function-name NetflixBackend \
+            --zip-file fileb://./backend/netflix2/build/libs/netflix2-0.0.1-SNAPSHOT.jar \
+            --region $AWS_REGION
