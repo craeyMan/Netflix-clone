@@ -33,7 +33,7 @@ jobs:
         run: |
           aws s3 cp --recursive ./Frontend/build s3://netflix1-react/frontend --region $AWS_REGION
 
-   Build-Backend:
+  Build-Backend:
     runs-on: ubuntu-latest
     needs: Build-Frontend
     env:
@@ -86,4 +86,3 @@ jobs:
               "sudo systemctl restart '${SERVICE_NAME}'"
             ]' \
             --region $AWS_REGION
-
