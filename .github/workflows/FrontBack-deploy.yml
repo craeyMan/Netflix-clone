@@ -56,7 +56,7 @@ jobs:
 
       - run: |
           aws ssm send-command \
-            --targets "Key=instanceIds,Values=i-01407f869499ddfe1" \
+            --targets "Key=instanceIds,Values=i-004e4b21c1c1ba292" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Spring Boot JAR" \
             --parameters 'commands=[
