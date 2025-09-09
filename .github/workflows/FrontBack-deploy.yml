@@ -97,7 +97,7 @@ jobs:
 EOL
 
     aws ssm send-command \
-      --targets "Key=InstanceIds,Values=$EC2_INSTANCE_ID" \
+      --targets "Key=InstanceIds,Values=$i-004e4b21c1c1ba292" \
       --document-name "AWS-RunShellScript" \
       --comment "Deploy Spring Boot JAR" \
       --parameters file://commands.json \
