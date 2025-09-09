@@ -83,9 +83,17 @@ jobs:
 
       - name: EC2로 JAR 배포 & 서비스 재시작 (SSM)
         run: |
+          COMMANDS=$(cat <<EOF
+mkdir -p /home/ubuntu/app
+aws s3 cp s3://netflix1-react/backend/netflix2.jar $JAR_PATH
+sudo chown ubuntu:ubuntu $JAR_PATH
+sudo systemctl daemon-reload
+sudo systemctl restart $SERVICE_NAME
+EOF
+)
           aws ssm send-command \
-            --targets "Key=instanceIds,Values=${EC2_INSTANCE_ID}" \
+            --targets "Key=InstanceIds,Values=$EC2_INSTANCE_ID" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Spring Boot JAR" \
-            --parameters '{"commands":["mkdir -p /home/ubuntu/app","aws s3 cp s3://netflix1-react/backend/netflix2.jar '${JAR_PATH}'","sudo chown ubuntu:ubuntu '${JAR_PATH}'","sudo systemctl daemon-reload","sudo systemctl restart '${SERVICE_NAME}'"]}' \
-            --region "${AWS_REGION}"
+            --parameters "commands=$COMMANDS" \
+            --region "$AWS_REGION"
