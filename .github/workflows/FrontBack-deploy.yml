@@ -33,7 +33,7 @@ jobs:
         run: |
           aws s3 cp --recursive ./Frontend/build s3://netflix1-react/frontend --region $AWS_REGION
 
-    Build-Backend:
+  Build-Backend:
     runs-on: ubuntu-latest
     needs: Build-Frontend
     env:
@@ -89,4 +89,3 @@ jobs:
             --comment "Deploy Spring Boot JAR" \
             --parameters '{"commands":["mkdir -p /home/ubuntu/app","aws s3 cp s3://netflix1-react/backend/netflix2.jar '${JAR_PATH}'","sudo chown ubuntu:ubuntu '${JAR_PATH}'","sudo systemctl daemon-reload","sudo systemctl restart '${SERVICE_NAME}'"]}' \
             --region "${AWS_REGION}"
-
