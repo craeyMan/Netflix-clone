@@ -83,8 +83,8 @@ jobs:
           aws s3 cp "$JAR_FILE" "s3://netflix1-react/backend/netflix2.jar" --region "$AWS_REGION"
 
       - name: EC2로 JAR 배포 & 서비스 재시작 (SSM)
-        run: |
-          cat > commands.json <<EOL
+  run: |
+    cat <<EOL > commands.json
 {
   "commands": [
     "mkdir -p /home/ubuntu/app",
@@ -96,9 +96,9 @@ jobs:
 }
 EOL
 
-          aws ssm send-command \
-            --targets "Key=InstanceIds,Values=$EC2_INSTANCE_ID" \
-            --document-name "AWS-RunShellScript" \
-            --comment "Deploy Spring Boot JAR" \
-            --parameters file://commands.json \
-            --region "$AWS_REGION"
+    aws ssm send-command \
+      --targets "Key=InstanceIds,Values=$EC2_INSTANCE_ID" \
+      --document-name "AWS-RunShellScript" \
+      --comment "Deploy Spring Boot JAR" \
+      --parameters file://commands.json \
+      --region "$AWS_REGION"
