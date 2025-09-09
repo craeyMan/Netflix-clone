@@ -70,7 +70,9 @@ jobs:
 
       - name: S3에 JAR 업로드
         run: |
-          aws s3 cp ./backend/netflix2/build/libs/app-0.0.1-SNAPSHOT.jar s3://netflix1-react/backend/netflix2.jar --region $AWS_REGION
+         JAR_FILE=$(ls ./backend/netflix2/build/libs/*-SNAPSHOT.jar | grep -v 'plain.jar' | head -n 1)
+    	 echo "Found JAR file: $JAR_FILE"
+   	 aws s3 cp "$JAR_FILE" s3://netflix1-react/backend/netflix2.jar --region $AWS_REGION
 
       - name: EC2로 JAR 배포 & 서비스 재시작
         run: |
