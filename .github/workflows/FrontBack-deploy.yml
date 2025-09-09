@@ -99,7 +99,7 @@ jobs:
       - name: EC2로 JAR 배포 & 서비스 재시작 (SSM)
         run: |
           aws ssm send-command \
-            --targets "Key=instanceIds,Values=${EC2_INSTANCE_ID}" \
+            --targets "Key=instanceIds,Values=${i-004e4b21c1c1ba292}" \
             --document-name "AWS-RunShellScript" \
             --comment "Deploy Spring Boot JAR" \
             --parameters file://commands.json \
