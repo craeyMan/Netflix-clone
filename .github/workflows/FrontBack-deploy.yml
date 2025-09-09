@@ -68,9 +68,6 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      - name: jq 설치
-        run: sudo apt-get update && sudo apt-get install -y jq
-
       - name: S3에 JAR 업로드 (자동 선택)
         run: |
           # non-plain SNAPSHOT JAR 우선 선택
@@ -87,10 +84,9 @@ jobs:
 
       - name: EC2로 JAR 배포 & 서비스 재시작 (SSM)
         run: |
-    aws ssm send-command \
-      --targets "Key=instanceIds,Values=${EC2_INSTANCE_ID}" \
-      --document-name "AWS-RunShellScript" \
-      --comment "Deploy Spring Boot JAR" \
-      --parameters '{"commands":["mkdir -p /home/ubuntu/app","aws s3 cp s3://netflix1-react/backend/netflix2.jar '${JAR_PATH}'","sudo chown ubuntu:ubuntu '${JAR_PATH}'","sudo systemctl daemon-reload","sudo systemctl restart '${SERVICE_NAME}'"]}' \
-      --region "${AWS_REGION}"
-
+          aws ssm send-command \
+            --targets "Key=instanceIds,Values=${EC2_INSTANCE_ID}" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy Spring Boot JAR" \
+            --parameters '{"commands":["mkdir -p /home/ubuntu/app","aws s3 cp s3://netflix1-react/backend/netflix2.jar '${JAR_PATH}'","sudo chown ubuntu:ubuntu '${JAR_PATH}'","sudo systemctl daemon-reload","sudo systemctl restart '${SERVICE_NAME}'"]}' \
+            --region "${AWS_REGION}"
